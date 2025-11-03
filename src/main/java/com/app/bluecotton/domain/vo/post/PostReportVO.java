@@ -6,6 +6,6 @@ import lombok.Data;
 public class PostReportVO {
     private Long id;
     private String postCommentReportContent;
-    private Long userId;
+    private Long memberId;
     private Long postId;
 }

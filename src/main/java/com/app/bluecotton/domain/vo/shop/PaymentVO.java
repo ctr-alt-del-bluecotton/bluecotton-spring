@@ -10,6 +10,6 @@ public class PaymentVO {
     private Integer paymentPrice;
     private String paymentType;
     private Enum paymentStatus;
-    private Date paymentDate;
+    private Date paymentCreateAt;
     private Long orderId;
 }

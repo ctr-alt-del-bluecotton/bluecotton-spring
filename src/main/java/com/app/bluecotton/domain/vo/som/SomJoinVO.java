@@ -6,5 +6,5 @@ import lombok.Data;
 public class SomJoinVO {
     private Long id;
     private Long somId;
-    private Long userId;
+    private Long memberId;
 }

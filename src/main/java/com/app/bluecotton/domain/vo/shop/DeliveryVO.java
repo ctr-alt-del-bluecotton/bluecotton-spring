@@ -10,6 +10,6 @@ public class DeliveryVO {
     private String deliveryAddress;
     private String deliveryRequest;
     private Integer deliveryFee;
-    private Long userId;
+    private Long memberId;
     private Long productId;
 }

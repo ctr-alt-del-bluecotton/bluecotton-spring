@@ -8,7 +8,7 @@ import java.util.Date;
 public class PostCommentVO {
     private Long id;
     private String postCommentContent;
-    private Date postCommentTime;
+    private Date postCommentCreateAt;
     private Long postId;
-    private Long userId;
+    private Long memberId;
 }

@@ -6,5 +6,6 @@ import lombok.Data;
 public class ProductReviewImageVO {
     private Long id;
     private String productReviewImagePath;
+    private String productReviewImageName;
     private Long productReviewId;
 }

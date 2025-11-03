@@ -6,5 +6,5 @@ import lombok.Data;
 public class PostReplyLikeVO {
     private Long id;
     private Long replyId;
-    private Long userId;
+    private Long memberId;
 }

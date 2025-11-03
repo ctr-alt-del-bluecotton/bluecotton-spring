@@ -7,5 +7,5 @@ public class PostCommentReportVO {
     private Long id;
     private String postCommentReportContent;
     private Long commentId;
-    private Long userId;
+    private Long memberId;
 }

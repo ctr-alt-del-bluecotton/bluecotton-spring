@@ -7,6 +7,6 @@ public class SomReviewVO {
     private Long id;
     private boolean somReviewIsChecked;
     private String somReviewContent;
-    private Long userId;
+    private Long memberId;
     private Long somId;
 }

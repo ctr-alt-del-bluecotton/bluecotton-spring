@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class PaymentSocialVO {
     private Long id;
-    private String pgProvider;
-    private String pgDealNumber;
+    private String paymentSocialName;
+    private String paymentSocialNumber;
     private Long paymentId;
 }

@@ -7,10 +7,10 @@ import java.util.Date;
 @Data
 public class ProductReviewVO {
     private Long id;
-    private Date productReviewDate;
-    private double productReviewRating;
+    private Date productReviewCreateAt;
+    private Integer productReviewRating;
     private String productReviewContent;
     private Long productId;
-    private Long userId;
-    private Long productReportId;
+    private Long memberId;
+    private Long productReviewReportId;
 }

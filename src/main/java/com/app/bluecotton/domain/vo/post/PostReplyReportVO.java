@@ -7,5 +7,5 @@ public class PostReplyReportVO {
     private Long id;
     private String postReplyReportContent;
     private Long replyId;
-    private Long userId;
+    private Long memberId;
 }

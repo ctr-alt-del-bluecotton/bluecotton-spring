@@ -9,10 +9,10 @@ public class PostVO {
     private Long id;
     private String postTitle;
     private String postContent;
-    private Date postTime;
-    private Long postCountRead;
+    private Date postCreateAt;
+    private Long postReadCount;
     private boolean postStatus;
-    private Long userId;
+    private Long memberId;
     private Long commentId;
     private Long somId;
 }

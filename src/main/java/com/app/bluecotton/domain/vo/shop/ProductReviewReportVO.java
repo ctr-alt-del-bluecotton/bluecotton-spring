@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class ProductReviewReportVO {
     private Long id;
-    private String productCommentReportContent;
-    private Long userId;
+    private String productReviewReportContent;
+    private Long memberId;
 }
