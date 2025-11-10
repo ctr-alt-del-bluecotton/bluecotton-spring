@@ -100,6 +100,7 @@ public class PostServiceImpl implements PostService {
         postDAO.update(postVO);
     }
 
+    //  게시판 상세 서비스
     @Override
     public PostDetailDTO getPostDetail(Long postId, Long memberId) {
         memberId = 1L; // 로그인 가정

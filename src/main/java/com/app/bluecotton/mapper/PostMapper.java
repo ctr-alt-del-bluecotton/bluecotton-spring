@@ -56,7 +56,7 @@ public interface PostMapper {
     //    임시저장 삭제 (마이페이지 or 작성완료 후 삭제용)
     void deleteDraftById(Long id);
 
-//    회원이 참여 중인 솜 카테고리 조회 (드롭다운용)
+    //    회원이 참여 중인 솜 카테고리 조회 (드롭다운용)
     List<SomCategoryDTO> findJoinedCategories(Long memberId);
 
     // 게시글 수정 조회

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,6 +20,9 @@ public class PostDetailDTO {
 
     private String memberNickname;
     private String memberProfileUrl;
+
+    private Long postLikeCount;
+    private Integer postIsLike;
 
     // 댓글 포함
     private List<PostCommentDTO> comments;
