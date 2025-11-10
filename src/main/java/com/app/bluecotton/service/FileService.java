@@ -6,7 +6,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
 @Service
@@ -29,14 +32,18 @@ public class FileService {
                 log.info("📁 폴더 생성 시도: {} → {}", UPLOAD_DIR, made);
             }
 
+            // ✅ 파일명 (UUID + 원본명)
             String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
             Path filePath = Paths.get(UPLOAD_DIR + fileName);
 
+            // ✅ 물리 저장
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
+            // ✅ 반환 URL (DB 저장용)
             String imageUrl = "/upload/post/" + fileName;
             log.info("✅ 이미지 업로드 완료: {}", imageUrl);
             return imageUrl;
+
         } catch (IOException e) {
             log.error("❌ 이미지 업로드 실패: {}", e.getMessage());
             throw new RuntimeException("이미지 업로드 실패", e);
