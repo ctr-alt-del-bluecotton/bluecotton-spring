@@ -29,8 +29,8 @@ public class PostDAO {
     }
 
     // 오늘 해당 솜에 이미 게시글 있는지 검사
-    public boolean existsTodayPostInSom(Long memberId, Long somId) {
-        return postMapper.existsTodayPostInSom(memberId, somId) > 0;
+    public int existsTodayPostInSom(Long memberId, Long somId) {
+        return postMapper.existsTodayPostInSom(memberId, somId);
     }
 
     // 게시글 이미지 매핑
@@ -81,7 +81,6 @@ public class PostDAO {
         postMapper.update(postVO);
     }
 
-    /* ===================== ❤️ 좋아요 ===================== */
 
     // 게시글 좋아요
     public boolean existsLike(Long postId, Long memberId) {
