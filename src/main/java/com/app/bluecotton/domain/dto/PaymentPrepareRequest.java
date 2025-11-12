@@ -11,7 +11,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PaymentPrepareRequest {
     private Long orderId;
+    private Long memberId;
     private Long amount;
     private String paymentType;
+    private String merchantUid;
 }
 

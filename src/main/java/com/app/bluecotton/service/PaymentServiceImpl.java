@@ -5,6 +5,7 @@ import com.app.bluecotton.domain.dto.PortOneDTO;
 import com.app.bluecotton.domain.dto.PortOneResponse;
 import com.app.bluecotton.domain.vo.shop.PaymentStatus;
 import com.app.bluecotton.domain.vo.shop.PaymentVO;
+import com.app.bluecotton.repository.OrderDAO;
 import com.app.bluecotton.repository.PaymentDAO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,10 +28,11 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentDAO paymentDAO;
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final OrderDAO orderDAO;
 
     private static final String PORTONE_API_BASE_URL = "https://api.iamport.kr";
     private static final String GET_TOKEN_URL = PORTONE_API_BASE_URL + "/users/getToken";
-    private static final String GET_PAYMENT_INFO_URL = PORTONE_API_BASE_URL + "/payment/{imp_uid}";
+    private static final String GET_PAYMENT_INFO_URL = PORTONE_API_BASE_URL + "/payments/{imp_uid}";
     private static final String PREPARE_PAYMENT_URL = PORTONE_API_BASE_URL + "/payments/prepare";
 
     @Value("${portone.api-url}")
@@ -63,7 +65,7 @@ public class PaymentServiceImpl implements PaymentService {
             }
             throw new RuntimeException("PortOne Access Token 발급 실패: " + response.getBody());
         } catch (Exception e) {
-            log.info("토큰 발급 중 예외 발생", e);
+            log.error("토큰 발급 중 예외 발생", e);
             throw new RuntimeException("PortOne API 통신 오류(토큰 발급)" , e);
         }
     }
@@ -81,15 +83,24 @@ public class PaymentServiceImpl implements PaymentService {
         String impUid = (String) paymentData.get("imp_uid");
         String merchantUid = (String) paymentData.get("merchant_uid");
 
+        if (impUid == null || impUid.isEmpty() || merchantUid == null || merchantUid.isEmpty()) {
+            log.error("필수 결제 데이터 누락: impUid={}, merchantUid={}", impUid, merchantUid);
+            throw new IllegalArgumentException("결제 검증에 필요한 필수 데이터(imp_uid 또는 merchant_uid)가 누락되었습니다.");
+        }
+
         String accessToken = getAccessToken();
 
         PortOneDTO portOnePaymentInfo = getPaymentInfoFromPortOne(accessToken, impUid);
+
+        if (portOnePaymentInfo == null || portOnePaymentInfo.getResponse() == null) {
+            throw new RuntimeException("PortOne에서 유효한 결제 응답 정보를 받지 못했습니다.");
+        }
 
         verifyPayment(merchantUid, portOnePaymentInfo);
 
         Long paidAmount = portOnePaymentInfo.getResponse().getAmount();
 
-        int rowsUpdated = paymentDAO.markSuccessByMerchantUid(merchantUid, impUid, paidAmount, PaymentStatus.PENDING);
+        int rowsUpdated = paymentDAO.markSuccessByMerchantUid(merchantUid, impUid, paidAmount, PaymentStatus.COMPLETED);
 
         if(rowsUpdated == 0) {
             log.info("DB업데이트 실패 ");
@@ -104,16 +115,27 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public PortOneResponse preparePayment(PaymentPrepareRequest request) {
+        Long memberId = request.getMemberId();
+        if(memberId == null) {
+            throw new IllegalArgumentException("회원 정보가 없습니다");
+        }
+
+
         Long orderId = request.getOrderId() != null ? request.getOrderId() : 1L;
 
         String merchantUid = generateMerchantUid(orderId);
 
+        Long finalAmount = request.getAmount();
+
+        if(finalAmount == null || finalAmount <= 0 ) {
+            throw new IllegalArgumentException("결제할 금액이 유효하지 앖습니다.");
+        }
         PaymentVO paymentVO = new PaymentVO();
-        paymentVO.setPaymentPrice(request.getAmount().intValue());
-        // PaymentPrepareRequest DTO에서 넘어온 결제 수단 정보 사용
+        paymentVO.setPaymentPrice(finalAmount.intValue());
         paymentVO.setPaymentType(request.getPaymentType());
         paymentVO.setPaymentStatus(PaymentStatus.PENDING); // 초기 상태는 PENDING
         paymentVO.setOrderId(orderId);
+        paymentVO.setMemberId(memberId);
         paymentVO.setMerchantUid(merchantUid);
 
         paymentDAO.save(paymentVO);
@@ -163,7 +185,10 @@ public class PaymentServiceImpl implements PaymentService {
         HttpEntity<Map<String, String>> request = new HttpEntity<>(headers);
 
         try {
-            ResponseEntity<PortOneDTO> response = restTemplate.exchange(GET_PAYMENT_INFO_URL, HttpMethod.GET, request, PortOneDTO.class, impUid);
+
+            Map<String, String> uriVariables = Collections.singletonMap("imp_uid", impUid);
+
+            ResponseEntity<PortOneDTO> response = restTemplate.exchange(GET_PAYMENT_INFO_URL, HttpMethod.GET, request, PortOneDTO.class, uriVariables);
 
             PortOneDTO result = response.getBody();
             if(result == null || result.getCode() != 0) {

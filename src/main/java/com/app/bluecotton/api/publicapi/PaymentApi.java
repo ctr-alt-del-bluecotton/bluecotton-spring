@@ -1,9 +1,6 @@
 package com.app.bluecotton.api.publicapi;
 
-import com.app.bluecotton.domain.dto.ApiResponseDTO;
-import com.app.bluecotton.domain.dto.PaymentPrepareRequest;
-import com.app.bluecotton.domain.dto.PortOneDTO;
-import com.app.bluecotton.domain.dto.PortOneResponse;
+import com.app.bluecotton.domain.dto.*;
 import com.app.bluecotton.domain.vo.shop.PaymentStatus;
 import com.app.bluecotton.domain.vo.shop.PaymentVO;
 import com.app.bluecotton.service.OrderService;
@@ -17,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.sound.sampled.Port;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -46,16 +44,19 @@ public class PaymentApi {
     }
 
     @PostMapping("verify")
-    public ResponseEntity<PortOneDTO> verifyPayment(@RequestBody Map<String, Object> paymentData) {
+    public ResponseEntity<PortOneDTO> verifyPayment(@RequestBody PaymentVerifyDTO request) {
 
-//            PortOneDTO errorResponse = new PortOneDTO();
-//            errorResponse.setCode(500);
-//            errorResponse.setMessage(e.getMessage());
+        Map<String, Object> paymentData = new HashMap<>();
 
-        PortOneDTO portOneResponse = paymentService.processPayment(paymentData);
+        paymentData.put("imp_uid", request.getImpUid());
+        paymentData.put("merchant_uid", request.getMerchantUid());
 
-        return ResponseEntity.ok().body(portOneResponse);
+        try {
+            PortOneDTO portOneResponse = paymentService.processPayment(paymentData);
+            return ResponseEntity.ok().body(portOneResponse);
+        } catch (IllegalArgumentException e) {
+            throw e;
         }
     }
 
-
+}
