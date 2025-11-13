@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.app.bluecotton.mapper.ChatMessageMapper">
+    <select id="selectAll" parameterType="Long" resultType="myChatVO">
+        SELECT
+            ID, CHAT_MESSAGE_CONTENT, CHAT_MESSAGE_CREATE_AT, CHAT_ID
+        FROM TBL_MY_CHAT
+        WHERE
+            MY_CHAT_ROOM_ID = #{myChatRoomId}
+        AND
+            (
+                CUSTOMER_RECEIVER_ID IS NULL
+                OR CUSTOMER_RECEIVER_ID = #{customerReceiverId}
+                OR CUSTOMER_SENDER_ID = #{customerReceiverId}
+            )
+        ORDER BY MY_CHAT_CREATE_AT ASC
+    </select>
+
+    <insert id="insert" parameterType="ChatMessageVO">
+        INSERT INTO TBL_CHAT_MESSAGE
+        VALUES(SEQ_CHAT_MESSAGE.NEXTVAL, #{chat}, #{customerId}, #{myChatRoomId})
+    </insert>
+
+    <delete id="delete" parameterType="ChatMessageVO">
+        DELETE FROM TBL_MY_CHAT_ROOM_CUSTOMER
+        WHERE
+            CUSTOMER_ID = #{customerId}
+        AND
+            MY_CHAT_ROOM_ID = #{myChatRoomId}
+    </delete>
+</mapper>

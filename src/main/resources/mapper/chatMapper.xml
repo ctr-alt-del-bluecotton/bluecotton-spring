@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.app.bluecotton.mapper.ChatMapper">
+    <insert id="insertChat" parameterType="ChatVO">
+        <selectKey keyProperty="id" resultType="long" order="BEFORE">
+            SELECT SEQ_CHAT.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO TBL_CHAT(ID, CHAT_TITLE, CHAT_STATUS)
+        VALUES(#{id}, #{chatTitle}, #{chatStatus})
+    </insert>
+
+    <select id="selectChatById" parameterType="Long" resultType="ChatVO">
+        SELECT TBC.ID, TBC.TBL_CHAT_TITLE, TBC.CHAT_STATUS, TBCM.CHAT_MEMBER_COUNT
+        FROM TBL_CHAT TBC
+        JOIN (
+            SELECT COUNT(ID) AS CHAT_MEMBER_COUNT
+            FROM TBL_CHAT_MEMBER
+        ) TBCM
+        ON TBCM.CHAT_ID = TBC.ID
+        WHERE ID = #{id}
+    </select>
+
+    <select id="selectAll" resultType="ChatVO">
+        SELECT TBC.ID, TBC.TBL_CHAT_TITLE, TBC.CHAT_STATUS, TBCM.CHAT_MEMBER_COUNT
+        FROM TBL_CHAT TBC
+        JOIN (
+            SELECT COUNT(ID) AS CHAT_MEMBER_COUNT
+            FROM TBL_CHAT_MEMBER
+        ) TBCM
+        ON TBCM.CHAT_ID = TBC.ID
+    </select>
+
+    <delete id="delete">
+        DELETE FROM TBL_CHAT
+        WHERE ID = #{id}
+    </delete>
+
+</mapper>
