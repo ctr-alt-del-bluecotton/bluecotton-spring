@@ -117,7 +117,7 @@ public interface PostMapper {
     );
 
     List<PostReplyDTO> selectReply(
-            @Param("postCommentId") Long commentId,
+            @Param("commentId") Long commentId,
             @Param("memberId") Long memberId
     );
 
