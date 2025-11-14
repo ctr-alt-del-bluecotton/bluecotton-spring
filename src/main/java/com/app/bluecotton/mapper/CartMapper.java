@@ -16,7 +16,7 @@ public interface CartMapper {
     List<CartResponseDTO> selectByMemberId(Long memberId);
 
 
-    Optional<Integer> selectQuantity( Long memberId,Long productId);
+    Optional<Integer> selectQuantity(@Param("memberId") Long memberId, @Param("productId") Long productId);
 
 
     public void updatePlus(CartVO cartVO);

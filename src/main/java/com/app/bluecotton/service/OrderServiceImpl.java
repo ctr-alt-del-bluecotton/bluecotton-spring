@@ -80,6 +80,8 @@ public class OrderServiceImpl implements OrderService {
         return lastOrderId;
     }
 
+
+
     @Override
     public List<OrderVO> selectAllOrders(Long memberId) {
         return orderDAO.selectAllOrders(memberId);
@@ -104,8 +106,7 @@ public class OrderServiceImpl implements OrderService {
     public void clearCartAfterOrder(Long memberId) {
         // 1) 주문 테이블에서 카트 FK 끊기 (ORDER_STATUS='Y' 대상)
         orderDAO.detachOrderFromCart(memberId);
-        // 2) 해당 회원 장바구니 전체 삭제
-        cartDAO.deleteAllByMember(memberId);
+
     }
 
     @Override
