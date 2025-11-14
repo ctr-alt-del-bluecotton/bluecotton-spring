@@ -19,18 +19,33 @@ public class PostImageServiceImpl implements PostImageService {
     private final PostImageDAO postImageDAO;
 
     @Override
-    public void createPostImageTemp(PostImageVO postImageVO) {
-        postImageDAO.insertImgTemp(postImageVO);
+    public void createPostImageTemp(PostImageVO vo) {
+        postImageDAO.insertImgTemp(vo);
     }
 
     @Override
-    public void updateInsertPostImage(PostImageUpdateDTO postImageUpdateDTO) {
-        postImageDAO.updateImgPostId(postImageUpdateDTO);
+    public void updateInsertPostImage(PostImageUpdateDTO dto) {
+        postImageDAO.updateImgPostId(dto);
     }
 
     @Override
     public List<PostImageVO> selectImagesByPostId(Long postId) {
         return postImageDAO.selectImagesByPostId(postId);
+    }
+
+    @Override
+    public void updatePostId(Long imageId, Long postId) {
+        postImageDAO.updatePostId(imageId, postId);
+    }
+
+//    @Override
+//    public void updateThumbnail(Long imageId, Long postId) {
+//        postImageDAO.updateThumbnail(imageId, postId);
+//    }
+
+    @Override
+    public void insertDefaultImage(Long postId) {
+        postImageDAO.insertDefaultImage(postId);
     }
 
 }

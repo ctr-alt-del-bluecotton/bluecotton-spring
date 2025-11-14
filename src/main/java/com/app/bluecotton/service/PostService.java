@@ -20,11 +20,11 @@ public interface PostService {
     int countPosts(String somCategory, String q);
 
     //    임시저장 불러온거 글쓴거
-    public void write(PostVO postVO, List<String> imageUrls, Long draftId);
+    public Long write(PostVO postVO, List<Long> postImageIds, Long draftId);
 
     //  새 글 작성
-    public default void write(PostVO postVO, List<String> imageUrls) {
-        write(postVO, imageUrls, null);
+    public default void write(PostVO postVO, List<Long> postImageIds) {
+        write(postVO, postImageIds, null);
     }
 
     //  카테고리 목록

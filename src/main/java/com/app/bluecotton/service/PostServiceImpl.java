@@ -44,36 +44,43 @@ public class PostServiceImpl implements PostService {
 
     // 게시글 등록 + draft 자동 삭제 (트랜잭션)
     @Override
-    public void write(PostVO postVO, List<String> imageUrls, Long draftId) {
+    public Long write(PostVO postVO, List<Long> postImageIds, Long draftId) {
 
-        // 1일 1회 제한
         int count = postDAO.existsTodayPostInSom(postVO.getMemberId(), postVO.getSomId());
         if (count > 0) {
             throw new PostException("이미 오늘 해당 솜에 게시글을 작성했습니다.");
         }
 
-        // 게시글 등록
+        // 1) 게시글 등록
         postDAO.insert(postVO);
 
-        // 이미지 처리
-        if (imageUrls != null && !imageUrls.isEmpty()) {
+        // 2) 이미지 처리
+        if (postImageIds != null && !postImageIds.isEmpty()) {
             boolean isFirst = true;
-            for (String url : imageUrls) {
-                postDAO.updatePostIdByUrl(url, postVO.getId());
-                if (isFirst) {
-                    postDAO.insertThumbnail(url, postVO.getId());
-                    isFirst = false;
-                }
+
+            for (Long imageId : postImageIds) {
+
+                // 이미지 → postId 연결
+                postImageService.updatePostId(imageId, postVO.getId());
+
+                // 맨 첫 번째 이미지를 썸네일로
+//                if (isFirst) {
+//                    postImageService.updateThumbnail(imageId, postVO.getId());
+//                    isFirst = false;
+//                }
             }
+
         } else {
-            // 기본 썸네일 자동 등록
-            postDAO.insertDefaultImage("/upload/default/", "default_post.jpg", postVO.getId());
+            // 기본 썸네일 등록
+            postImageService.insertDefaultImage(postVO.getId());
         }
 
-        // draftId 존재 시 자동 삭제
+        // 3) 임시저장 삭제
         if (draftId != null) {
             postDAO.deleteDraftById(draftId);
         }
+
+        return postVO.getId();
     }
 
     // 회원이 참여 중인 솜 카테고리 목록 조회

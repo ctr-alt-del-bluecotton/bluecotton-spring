@@ -17,16 +17,28 @@ public class PostImageDAO {
 
     private final PostImageMapper postImageMapper;
 
-    public void insertImgTemp(PostImageVO postImageVO){
-        postImageMapper.insertImgTemp(postImageVO);
+    public void insertImgTemp(PostImageVO vo) {
+        postImageMapper.insertImgTemp(vo);
     }
 
-    public void updateImgPostId(PostImageUpdateDTO postImageUpdateDTO){
-        postImageMapper.updateImgPostId(postImageUpdateDTO);
+    public void updateImgPostId(PostImageUpdateDTO dto) {
+        postImageMapper.updateImgPostId(dto);
     }
 
-    public List<PostImageVO> selectImagesByPostId(Long postId){
+    public List<PostImageVO> selectImagesByPostId(Long postId) {
         return postImageMapper.selectImagesByPostId(postId);
+    }
+
+    public void updatePostId(Long imageId, Long postId) {
+        postImageMapper.updatePostId(imageId, postId);
+    }
+
+    public void updateThumbnail(Long imageId, Long postId) {
+        postImageMapper.updateThumbnail(imageId, postId);
+    }
+
+    public void insertDefaultImage(Long postId) {
+        postImageMapper.insertDefaultImage(postId);
     }
 
 }

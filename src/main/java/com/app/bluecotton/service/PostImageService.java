@@ -10,10 +10,16 @@ import java.util.List;
 
 public interface PostImageService {
 
-    public void createPostImageTemp(PostImageVO postImageVO);
+    void createPostImageTemp(PostImageVO postImageVO);
 
-    public void updateInsertPostImage(PostImageUpdateDTO postImageUpdateDTO);
+    void updateInsertPostImage(PostImageUpdateDTO dto);
 
-    public List<PostImageVO> selectImagesByPostId(Long postId);
+    List<PostImageVO> selectImagesByPostId(Long postId);
+
+    void updatePostId(Long imageId, Long postId);
+
+//    void updateThumbnail(Long imageId, Long postId);
+
+    void insertDefaultImage(Long postId);
 
 }
