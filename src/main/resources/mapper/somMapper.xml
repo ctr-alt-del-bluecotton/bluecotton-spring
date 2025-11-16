@@ -58,6 +58,7 @@
             <if test="somType != null and somType != '' and somType != 'all'">
                 AND SOM_TYPE = #{somType}
             </if>
+            AND SOM_END_DATE > SYSDATE + 9
         </where>
     </select>
 
@@ -96,6 +97,7 @@
             <if test="somType != null and somType != '' and somType != 'all'">
                 AND SOM_TYPE = #{somType}
             </if>
+            AND TBS.SOM_END_DATE > SYSDATE + 9
         </where>
         ORDER BY ID DESC
         OFFSET (#{page} - 1) * 9 ROWS FETCH NEXT 9 ROWS ONLY
