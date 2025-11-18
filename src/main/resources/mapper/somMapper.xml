@@ -215,7 +215,7 @@
         JOIN TBL_MEMBER_PROFILE TBMP
         ON TBM.ID = TBMP.MEMBER_ID
         WHERE SOM_ID = #{somId}
-        ORDER BY TBSJ.ID DESC
+        ORDER BY TBSJ.ID ASC
     </select>
 
     <delete id="deleteSomJoin" parameterType="SomJoinVO">
