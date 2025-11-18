@@ -38,6 +38,7 @@
 
         FROM TBL_PRODUCT TBP
         <where>
+            <!-- 상품 검색 -->
             <if test="q != null and q != ''">
                 AND (TBP.PRODUCT_NAME LIKE '%' || #{q} || '%')
             </if>
@@ -456,6 +457,21 @@
         WHERE ID = #{id}
     </delete>
 
+    <!--  마이페이지 배송현황 ORDER_ID 삭제 -->
+    <delete id="deletePaymentByOrderId" parameterType="Long">
+        DELETE FROM TBL_PAYMENT
+        WHERE ORDER_ID = #{id}
+    </delete>
+
+    <!--  마이페이지 배송현황 PAYMENT_ID 삭제 -->
+    <delete id="deletePaymentSocialByPaymentId" parameterType="Long">
+        DELETE FROM TBL_PAYMENT_SOCIAL
+        WHERE PAYMENT_ID IN (
+        SELECT ID
+        FROM TBL_PAYMENT
+        WHERE ORDER_ID = #{id}
+        )
+    </delete>
 
     <!-- 리뷰하기 유효성 검사  -->
     <select id="existProductReview" parameterType="map" resultType="int">
@@ -479,8 +495,17 @@
     <!-- 리뷰 댓글 신고-->
     <insert id="productReviewReport" parameterType="com.app.bluecotton.domain.vo.shop.ProductReviewReportVO">
         INSERT INTO TBL_PRODUCT_REVIEW_REPORT
-        VALUES (SEQ_PRODUCT_REVIEW_REPORT.NEXTVAL , #{productReviewReportContent}, #{memberId}, #{productReviewId})
+        VALUES (SEQ_PRODUCT_REVIEW_REPORT.NEXTVAL , #{productReviewReportContent}, SYSTIMESTAMP,  #{memberId}, #{productReviewId})
     </insert>
+
+    <!-- 리뷰 댓글 신고 중복 체크 -->
+    <select id="checkProductReviewReportExists" resultType="int" parameterType="map">
+        SELECT COUNT(*)
+        FROM TBL_PRODUCT_REVIEW_REPORT
+        WHERE PRODUCT_REVIEW_ID = #{productReviewId}
+        AND MEMBER_ID = #{memberId}
+    </select>
+
 
 
     <!-- 리뷰 댓글 도움돼요 상태 여부 조회 -->
@@ -501,6 +526,8 @@
         AND TPRR.MEMBER_ID = #{memberId}
         WHERE TBPR.ID = #{reviewId}
     </select>
+
+
 
 
 

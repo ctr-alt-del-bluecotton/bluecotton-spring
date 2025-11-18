@@ -37,6 +37,7 @@ public class MyPageShopApi {
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponseDTO.of("마이리뷰 조회 성공", myReviews));
     }
 
+    // 마이리뷰 수정
     @PutMapping("review/{reviewId}")
     public ResponseEntity<ApiResponseDTO> modifyMyReview(@PathVariable Long reviewId, @RequestBody Map<String,Object> modifyReview){
         modifyReview.put("reviewId", reviewId);
