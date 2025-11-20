@@ -1,5 +1,6 @@
 package com.app.bluecotton.service;
 
+import com.app.bluecotton.domain.dto.MemberResponseDTO;
 import com.app.bluecotton.domain.dto.MemberSomLeaderResponseDTO;
 import com.app.bluecotton.domain.dto.SomJoinResponseDTO;
 import com.app.bluecotton.domain.dto.SomResponseDTO;
@@ -48,10 +49,12 @@ public class SomServiceImpl implements SomService {
     public SomResponseDTO findById(Long somId, String memberEmail) {
         SomResponseDTO somResponseDTO = somDAO.findById(somId).orElseThrow(() -> new SomException("솜을 불러오지 못했습니다"));
         List<SomImageVO> somImages = somImageService.selectImagesBySomId(somId);
-        Long currentMemberId = memberService.getMemberIdByMemberEmail(memberEmail);
+        Long currentMemberId = !memberEmail.isEmpty() ? memberService.getMemberIdByMemberEmail(memberEmail) : 0;
+        Long somLeaderId = somResponseDTO.getMemberId();
         SomLikeVO somLikeVO = new SomLikeVO();
-        MemberSomLeaderResponseDTO memberSomLeaderResponseDTO = new MemberSomLeaderResponseDTO(memberService.getMemberById(somResponseDTO.getMemberId()));
-        MemberProfileVO memberProfileVO = memberService.getMemberProfileImage(somResponseDTO.getMemberId());
+        MemberResponseDTO memberResponseDTO = memberService.getMemberById(somLeaderId);
+        MemberSomLeaderResponseDTO memberSomLeaderResponseDTO = new MemberSomLeaderResponseDTO(memberResponseDTO);
+        MemberProfileVO memberProfileVO = memberService.getMemberProfileImage(somLeaderId);
         somLikeVO.setSomId(somId);
         somLikeVO.setMemberId(currentMemberId);
         if(somImages.isEmpty()){
@@ -97,10 +100,12 @@ public class SomServiceImpl implements SomService {
     public List<SomResponseDTO> findByCategoryAndType(Map<String, Object> map){
         List<SomResponseDTO> somList = somDAO.findSomListByCategoryAndType(map).stream().map((som) -> {
             List<SomImageVO> somImages = somImageService.selectImagesBySomId(som.getId());
-            Long currentMemberId = memberService.getMemberIdByMemberEmail(map.get("memberEmail").toString());
+            Long currentMemberId = !String.valueOf(map.get("memberEmail")).isEmpty() ? memberService.getMemberIdByMemberEmail(String.valueOf(map.get("memberEmail"))) : 0;
+            Long somLeaderId = som.getMemberId();
             SomLikeVO somLikeVO = new SomLikeVO();
-            MemberSomLeaderResponseDTO memberSomLeaderResponseDTO = new MemberSomLeaderResponseDTO(memberService.getMemberById(som.getMemberId()));
-            MemberProfileVO memberProfileVO = memberService.getMemberProfileImage(som.getMemberId());
+            MemberResponseDTO memberResponseDTO = memberService.getMemberById(somLeaderId);
+            MemberSomLeaderResponseDTO memberSomLeaderResponseDTO = new MemberSomLeaderResponseDTO(memberResponseDTO);
+            MemberProfileVO memberProfileVO = memberService.getMemberProfileImage(somLeaderId);
             somLikeVO.setSomId(som.getId());
             somLikeVO.setMemberId(currentMemberId);
             if(somImages.isEmpty()){
