@@ -19,8 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 
-@Service
 @Slf4j
+@Service
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
 public class SomServiceImpl implements SomService {
@@ -59,9 +59,9 @@ public class SomServiceImpl implements SomService {
         somLikeVO.setMemberId(currentMemberId);
         if(somImages.isEmpty()){
             SomImageVO somImageVO = new SomImageVO();
-            somImageVO.setSomImagePath("https://image-server.ideaflow.co.kr/uploads/som/2025/11/10/default_post_25987fce-7bfb-43bb-8984-f4bae4daacb5.jpg");
+            somImageVO.setSomImagePath("https://image-server.ideaflow.co.kr/uploads/som/2025/11/10/default_post_25987fce-7bfb-43bb-8984-f4bae4daacb5.png");
             somImageVO.setSomId(somId);
-            somImageVO.setSomImageName("default_post_25987fce-7bfb-43bb-8984-f4bae4daacb5.jpg");
+            somImageVO.setSomImageName("default_post_25987fce-7bfb-43bb-8984-f4bae4daacb5.png");
             somImages.add(somImageVO);
         }
         memberSomLeaderResponseDTO.setMemberPictureName(memberProfileVO.getMemberProfileName());
@@ -82,9 +82,9 @@ public class SomServiceImpl implements SomService {
             List<SomImageVO> somImages = somImageService.selectImagesBySomId(som.getId());
             if(somImages.isEmpty()){
                 SomImageVO somImageVO = new SomImageVO();
-                somImageVO.setSomImagePath("https://image-server.ideaflow.co.kr/uploads/som/2025/11/10/default_post_25987fce-7bfb-43bb-8984-f4bae4daacb5.jpg");
+                somImageVO.setSomImagePath("https://image-server.ideaflow.co.kr/uploads/som/2025/11/10/default_post_25987fce-7bfb-43bb-8984-f4bae4daacb5.png");
                 somImageVO.setSomId(som.getId());
-                somImageVO.setSomImageName("1762700261.jpg");
+                somImageVO.setSomImageName("default_post_25987fce-7bfb-43bb-8984-f4bae4daacb5.png");
                 somImages.add(somImageVO);
             }
             som.setSomCount(somDAO.readSomJoinList(som.getId()).size());
@@ -110,9 +110,9 @@ public class SomServiceImpl implements SomService {
             somLikeVO.setMemberId(currentMemberId);
             if(somImages.isEmpty()){
                 SomImageVO somImageVO = new SomImageVO();
-                somImageVO.setSomImagePath("https://image-server.ideaflow.co.kr/uploads/som/2025/11/10/default_post_25987fce-7bfb-43bb-8984-f4bae4daacb5.jpg");
+                somImageVO.setSomImagePath("https://image-server.ideaflow.co.kr/uploads/som/2025/11/10/default_post_25987fce-7bfb-43bb-8984-f4bae4daacb5.png");
                 somImageVO.setSomId(som.getId());
-                somImageVO.setSomImageName("1762700261.jpg");
+                somImageVO.setSomImageName("default_post_25987fce-7bfb-43bb-8984-f4bae4daacb5.png");
                 somImages.add(somImageVO);
             }
             memberSomLeaderResponseDTO.setMemberPictureName(memberProfileVO.getMemberProfileName());
@@ -122,6 +122,7 @@ public class SomServiceImpl implements SomService {
             som.setIsSomLike(somDAO.selectIsSomLike(somLikeVO));
             som.setSomJoinList(somDAO.readSomJoinList(som.getId()));
             som.setSomImageList(somImages);
+            log.info("SomResponseDTO : {}", som);
             return som;
         }).toList();
 
